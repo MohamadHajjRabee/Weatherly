@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Weatherly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+<body>
+<%- include("header"); %>
+<div class="container">
+    <div class="home">
+        <div class="home-container">
+            <form method="post" action="/">
+                <div class="container-text">
+                    Find weather in your country
+                </div>
+                <div class="searchbar">
+                    <input type="text" class="search-input" placeholder="London, UK" name="cityNameSearch"
+                           value="<%= search %>" required>
+                    <button type="submit" class="btn search-btn"><i class="fa fa-search"></i></button>
+                </div>
+                <a href="" class="auto-find">Automatically detect my city</a>
+                <div class="auto-find-error"></div>
+            </form>
+
+            <% cities.forEach(city => { %>
+
+                <form class="city-form" onclick="this.submit()" method="post"
+                      action="/city/?c=<%= city.name %>&r=<%= city.country %>&t=<%= city.lat %>&n=<%= city.lon %>">
+                    <p>Name: <%= city.name %></p>
+                    <p>Country: <%= city.country %></p>
+                    <p>Lat: <%= city.lat.toFixed(3) %> &emsp;Lon: <%= city.lon.toFixed(3) %></p>
+                </form>
+            <% }); %>
+        </div>
+
+
+    </div>
+</div>
+
+
+<script>
+    let autoFindError = document.querySelector(".auto-find-error");
+    document.querySelector(".auto-find").addEventListener("click", function (event){
+        event.preventDefault();
+        navigator.geolocation.getCurrentPosition((position)=>{
+            autoFindError.innerHTML = "";
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const form = document.createElement('form');
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', `/autoFind/${lat}/${lon}`);
+            document.body.appendChild(form);
+            form.submit()
+
+        },(error) => {
+            switch (error.code){
+                case error.PERMISSION_DENIED:
+                    autoFindError.innerHTML = "You have denied the request for Geolocation."
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    autoFindError.innerHTML = "Location information is unavailable."
+                    break;
+                case error.TIMEOUT:
+                    autoFindError.innerHTML = "The request to get user location timed out."
+                    break;
+                case error.UNKNOWN_ERROR:
+                    autoFindError.innerHTML = "An unknown error occurred."
+                    break;
+            }
+            })
+    })
+</script>
+</body>
+
+
+</html>
