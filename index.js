@@ -36,7 +36,7 @@ app.post('/autoFind/:lat/:lon', async function(req, res){
     const reverseGeocodeUrl = `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${APIKey}`
     const data = await fetch(reverseGeocodeUrl, {method: 'get'})
         .then(response => response.json())
-    const cityName = data[0].name;
+    const cityName = data[0]['name'];
     const countryName = data[0].country;
     await res.redirect(307,`/city/?c=${cityName}&r=${countryName}&t=${lat}&n=${lon}`);
 
