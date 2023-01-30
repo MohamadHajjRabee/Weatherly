@@ -39,7 +39,7 @@ a{
 }
 .container{
     min-height: 100vh;
-    background: url("../images/Background.png") fixed center center no-repeat;
+    background: url("../images/Background.jpg") fixed center center no-repeat;
     background-size: cover;
     padding: 30px;
     box-sizing: border-box;
